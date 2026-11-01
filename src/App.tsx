@@ -1,12 +1,14 @@
 import { useState, type ComponentType } from "react";
 import DotsAndBoxes, { meta as dotsMeta } from "./games/dotsandboxes";
 import SamePage, { meta as samePageMeta } from "./games/samepage";
+import Heartfall, { meta as heartfallMeta } from "./games/dont-break-the-heart";
 import TwoPlayerTest from "./components/TwoPlayerTest";
 import type { GameProps } from "./games/dotsandboxes";
 
 const GAMES: { meta: { id: string; name: string; emoji: string }; Game: ComponentType<GameProps> }[] = [
   { meta: dotsMeta, Game: DotsAndBoxes },
   { meta: samePageMeta, Game: SamePage },
+  { meta: heartfallMeta, Game: Heartfall },
 ];
 
 function initialGame(): string {

@@ -1,0 +1,214 @@
+/* Heartfall – Gulaab in-call game.
+   Every selector is prefixed .hf- so nothing leaks into the host app.
+   Transparent background: Gulaab draws its dark glass panel behind it. */
+
+.hf-root {
+  --hf-text: #f8f4ff;
+  --hf-muted: #b3a6cc;
+  --hf-host-c: #f9a8d4;
+  --hf-guest-c: #7dd3fc;
+  --hf-success: #34d399;
+  --hf-warning: #fbbf24;
+  --hf-grad: linear-gradient(135deg, #ff3d7f 0%, #ff7a59 100%);
+  --hf-rose: #ff5c9a;
+  --hf-blush: #ffc2da;
+  --hf-glass: rgba(255, 214, 231, 0.08);
+  --hf-line: rgba(255, 194, 218, 0.22);
+
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 384px;
+  height: 420px;
+  max-height: 100%;
+  padding: 8px;
+  overflow: hidden;
+  background: transparent;
+  color: var(--hf-text);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.25;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.hf-root.hf-me-host { --hf-me: var(--hf-host-c); }
+.hf-root.hf-me-guest { --hf-me: var(--hf-guest-c); }
+.hf-root *, .hf-root *::before, .hf-root *::after { box-sizing: border-box; }
+.hf-root .hf-host { --hf-c: var(--hf-host-c); }
+.hf-root .hf-guest { --hf-c: var(--hf-guest-c); }
+.hf-c-host { color: var(--hf-host-c); }
+.hf-c-guest { color: var(--hf-guest-c); }
+.hf-tone-me { color: var(--hf-me); }
+.hf-tone-ok { color: var(--hf-success); }
+.hf-tone-warn { color: var(--hf-warning); }
+
+/* ---------- A. header ---------- */
+.hf-header { flex: 0 0 34px; display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 0; }
+.hf-rose { font-size: 20px; filter: drop-shadow(0 0 6px rgba(255, 92, 154, 0.6)); animation: hf-bob 3s ease-in-out infinite; }
+.hf-heading { min-width: 0; text-align: center; }
+.hf-title {
+  font-size: 18px; font-weight: 800; letter-spacing: 0.01em;
+  background: linear-gradient(90deg, #ffd6e7, #ff8fb8 45%, #ffc2da);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hf-title { text-shadow: 0 0 18px rgba(255, 92, 154, 0.25); }
+.hf-subtitle { color: var(--hf-muted); font-size: 10.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------- B. players ---------- */
+.hf-players { flex: 0 0 46px; display: flex; align-items: stretch; gap: 6px; min-width: 0; }
+.hf-player {
+  flex: 1 1 0; min-width: 0; display: flex; align-items: center; gap: 6px; padding: 4px 8px 4px 5px;
+  border-radius: 16px; background: var(--hf-glass); border: 1.5px solid var(--hf-line);
+  transition: border-color 0.3s, box-shadow 0.3s, background 0.3s;
+}
+.hf-player.hf-active {
+  border-color: var(--hf-c);
+  background: color-mix(in srgb, var(--hf-c) 14%, transparent);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--hf-c) 40%, transparent);
+}
+.hf-avatar {
+  flex: 0 0 34px; width: 34px; height: 34px; display: grid; place-items: center; font-size: 19px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff 0%, color-mix(in srgb, var(--hf-c) 55%, #fff) 45%, var(--hf-c) 100%);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--hf-c) 70%, transparent), inset 0 -3px 6px rgba(0, 0, 0, 0.12);
+}
+.hf-active .hf-avatar { animation: hf-bob 1.6s ease-in-out infinite; }
+.hf-player-text { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; }
+.hf-player-name { font-weight: 700; font-size: 12.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hf-player-tag { font-size: 10px; font-weight: 700; color: var(--hf-c); text-transform: uppercase; letter-spacing: 0.06em; }
+.hf-score { flex: 0 0 auto; font-size: 21px; font-weight: 800; color: var(--hf-c); font-variant-numeric: tabular-nums; animation: hf-bump 0.4s ease-out; }
+.hf-round {
+  flex: 0 0 auto; align-self: center; min-width: 32px; height: 24px; padding: 0 6px; display: grid; place-items: center;
+  border-radius: 12px; background: var(--hf-glass); color: var(--hf-muted); font-size: 11px; font-weight: 800;
+}
+
+/* ---------- E. turn indicator ---------- */
+.hf-turn {
+  flex: 0 0 24px; display: grid; place-items: center; padding: 0 12px; margin: 0 auto; max-width: 100%;
+  border-radius: 12px; background: var(--hf-glass); border: 1px solid var(--hf-line);
+  font-size: 13px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  animation: hf-pop-in 0.3s ease-out;
+}
+
+/* ---------- C. heart ---------- */
+.hf-board { position: relative; flex: 1 1 auto; min-height: 0; display: flex; align-items: center; justify-content: center; }
+.hf-heart { display: block; width: 100%; height: 100%; overflow: visible; }
+.hf-glow { fill: rgba(255, 92, 154, 0.22); filter: blur(7px); }
+.hf-glass { stroke: rgba(255, 255, 255, 0.75); stroke-width: 1.3; stroke-linejoin: round; }
+.hf-shine { pointer-events: none; }
+.hf-outline { fill: none; stroke: rgba(255, 240, 246, 0.85); stroke-width: 2; filter: drop-shadow(0 0 4px rgba(255, 130, 180, 0.8)); pointer-events: none; }
+.hf-piece { transform-box: fill-box; transform-origin: center; transition: opacity 0.25s; }
+.hf-p-gone { opacity: 0; }
+.hf-gone-now { animation: hf-vanish 0.55s ease-in forwards; }
+.hf-p-cracked .hf-glass { fill: rgba(150, 40, 90, 0.55); stroke: rgba(255, 255, 255, 0.5); }
+.hf-p-cracked .hf-shine { opacity: 0.3; }
+.hf-crack-now { animation: hf-crack-flash 0.5s ease-out; }
+.hf-piece-crack { fill: none; stroke: #fff; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; opacity: 0.9; filter: drop-shadow(0 0 2px rgba(255, 60, 130, 0.9)); }
+.hf-pending { animation: hf-pending 0.7s ease-in-out infinite alternate; }
+
+.hf-heart-crack { fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 0; pointer-events: none; filter: drop-shadow(0 0 3px rgba(255, 50, 120, 0.95)); animation: hf-draw 0.6s ease-out; }
+.hf-heart-crack-1 { stroke-width: 1.8; }
+.hf-heart-crack-2 { stroke-width: 2.4; }
+
+.hf-hit { fill: transparent; stroke: none; outline: none; }
+.hf-hit-on { cursor: pointer; }
+.hf-hit-on:focus-visible { fill: rgba(255, 255, 255, 0.18); }
+@media (hover: hover) { .hf-hit-on:hover { fill: rgba(255, 255, 255, 0.1); } }
+.hf-hit-on:active { fill: rgba(255, 255, 255, 0.2); }
+
+.hf-shake-1 { animation: hf-shake-1 0.45s ease-in-out; }
+.hf-shake-2 { animation: hf-shake-2 0.6s ease-in-out; }
+
+.hf-particle { fill: #ff8fb8; animation: hf-burst 0.75s ease-out forwards; }
+.hf-sparkle { fill: #fff; font-size: 9px; text-anchor: middle; dominant-baseline: central; animation: hf-burst 0.7s ease-out forwards; }
+
+/* shatter */
+.hf-fly { animation: hf-fly 0.9s cubic-bezier(0.3, 0.6, 0.4, 1) var(--d, 0ms) forwards; }
+.hf-shatter .hf-outline, .hf-shatter .hf-glow, .hf-shatter .hf-heart-crack { animation: hf-fade 0.4s ease-out forwards; }
+.hf-shard { fill: rgba(255, 210, 230, 0.9); stroke: #fff; stroke-width: 0.6; transform-box: fill-box; transform-origin: center; animation: hf-fly-shard 0.9s ease-out forwards; }
+
+.hf-deco { position: absolute; color: var(--hf-blush); opacity: 0.7; pointer-events: none; animation: hf-twinkle 2.6s ease-in-out infinite; }
+.hf-deco-1 { top: 6%; left: 6%; font-size: 14px; }
+.hf-deco-2 { top: 10%; right: 7%; font-size: 12px; color: var(--hf-rose); animation-delay: 0.6s; }
+.hf-deco-3 { bottom: 12%; left: 9%; font-size: 10px; animation-delay: 1.1s; }
+.hf-deco-4 { bottom: 8%; right: 10%; font-size: 13px; animation-delay: 1.7s; }
+
+/* ---------- overlays ---------- */
+.hf-overlay {
+  position: absolute; inset: 0; display: grid; place-items: center; border-radius: 20px; overflow: hidden;
+  background: rgba(30, 10, 28, 0.6); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px);
+  animation: hf-pop-in 0.35s ease-out both;
+}
+.hf-result-late { animation-delay: 0.85s; }
+.hf-card {
+  position: relative; width: min(290px, calc(100% - 12px)); display: flex; flex-direction: column; align-items: center; gap: 7px;
+  padding: 14px 12px; border-radius: 22px; text-align: center;
+  background: linear-gradient(160deg, rgba(70, 24, 60, 0.95), rgba(40, 14, 40, 0.95));
+  border: 1px solid rgba(255, 194, 218, 0.35); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 24px rgba(255, 92, 154, 0.2);
+}
+.hf-card-emoji { font-size: 28px; }
+.hf-card-title { font-size: 16px; font-weight: 800; }
+.hf-card-sub { color: var(--hf-muted); font-size: 12px; }
+.hf-card-sub b { font-weight: 800; }
+.hf-final { display: flex; align-items: baseline; gap: 10px; font-size: 28px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.hf-dash { color: var(--hf-muted); font-size: 20px; }
+.hf-actions { display: flex; gap: 8px; }
+
+.hf-btn {
+  min-height: 44px; min-width: 120px; padding: 0 18px; border: 0; border-radius: 16px; background: var(--hf-grad);
+  color: #fff; font: inherit; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 18px rgba(255, 61, 127, 0.35);
+  transition: transform 0.15s, filter 0.15s, opacity 0.15s;
+}
+.hf-btn:hover { filter: brightness(1.08); }
+.hf-btn:active { transform: scale(0.96); }
+.hf-btn:disabled { opacity: 0.55; cursor: default; transform: none; filter: none; }
+.hf-ghost {
+  min-height: 44px; padding: 0 12px; border-radius: 16px; border: 1px solid var(--hf-line); background: var(--hf-glass);
+  color: var(--hf-text); font: inherit; font-size: 12.5px; font-weight: 700; cursor: pointer; white-space: nowrap;
+}
+.hf-ghost:hover { background: rgba(255, 214, 231, 0.16); }
+.hf-root button:focus-visible { outline: 2px solid var(--hf-text); outline-offset: 2px; }
+
+.hf-confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.hf-confetti span { position: absolute; top: -12%; font-size: 14px; animation: hf-fall linear infinite; opacity: 0.9; }
+
+.hf-help { position: absolute; inset: 0; z-index: 5; display: grid; place-items: center; padding: 10px; border-radius: 20px; background: rgba(20, 8, 22, 0.78); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); animation: hf-pop-in 0.25s ease-out; }
+.hf-help-card { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 16px 14px; border-radius: 22px; background: linear-gradient(160deg, rgba(70, 24, 60, 0.97), rgba(40, 14, 40, 0.97)); border: 1px solid rgba(255, 194, 218, 0.35); }
+.hf-help ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--hf-text); text-align: left; }
+.hf-help li::marker { content: "♥  "; color: var(--hf-rose); }
+
+/* ---------- D/F. bottom ---------- */
+.hf-bottom { flex: 0 0 44px; display: flex; align-items: center; justify-content: space-between; gap: 6px; min-width: 0; }
+.hf-strength { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 1px; }
+.hf-hearts { display: flex; gap: 5px; font-size: 16px; line-height: 1; }
+.hf-h-ok { color: var(--hf-rose); text-shadow: 0 0 6px rgba(255, 92, 154, 0.6); }
+.hf-h-broken { animation: hf-bump 0.5s ease-out; }
+.hf-strength-text { color: var(--hf-muted); font-size: 10.5px; font-weight: 700; white-space: nowrap; }
+
+/* ---------- keyframes ---------- */
+@keyframes hf-vanish { 0% { transform: scale(1); opacity: 1; } 35% { transform: scale(0.9); opacity: 1; } 100% { transform: scale(0.6); opacity: 0; } }
+@keyframes hf-crack-flash { 0% { filter: brightness(2.2); } 100% { filter: none; } }
+@keyframes hf-pending { from { opacity: 1; } to { opacity: 0.55; } }
+@keyframes hf-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes hf-shake-1 { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-3px); } 50% { transform: translateX(3px); } 75% { transform: translateX(-2px); } }
+@keyframes hf-shake-2 { 0%, 100% { transform: translate(0); } 15% { transform: translate(-6px, 1px) rotate(-1.5deg); } 35% { transform: translate(6px, -1px) rotate(1.5deg); } 55% { transform: translate(-5px, 0) rotate(-1deg); } 75% { transform: translate(4px, 1px); } }
+@keyframes hf-burst { from { transform: translate(0, 0); opacity: 1; } to { transform: translate(var(--tx), var(--ty)); opacity: 0; } }
+@keyframes hf-fly { 0% { transform: translate(0, 0) rotate(0); opacity: 1; } 100% { transform: translate(var(--dx), var(--dy)) rotate(var(--rot)); opacity: 0; } }
+@keyframes hf-fly-shard { 0% { transform: translate(0, 0) rotate(0) scale(0.6); opacity: 1; } 100% { transform: translate(var(--tx), var(--ty)) rotate(var(--rot)) scale(1); opacity: 0; } }
+@keyframes hf-fade { to { opacity: 0; } }
+@keyframes hf-pop-in { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: none; } }
+@keyframes hf-bump { 0% { transform: scale(1); } 40% { transform: scale(1.35); } 100% { transform: scale(1); } }
+@keyframes hf-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2px); } }
+@keyframes hf-twinkle { 0%, 100% { opacity: 0.25; transform: scale(0.85); } 50% { opacity: 0.85; transform: scale(1.1); } }
+@keyframes hf-fall { 0% { transform: translateY(0) rotate(0); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(380px) rotate(240deg); opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .hf-root, .hf-root *, .hf-root *::before, .hf-root *::after { animation: none !important; transition: none !important; }
+  /* Without the animation, shattered pieces and shards must still end up hidden. */
+  .hf-fly, .hf-shard, .hf-gone-now, .hf-particle, .hf-sparkle { opacity: 0 !important; }
+  .hf-confetti { display: none; }
+}

@@ -8,5 +8,7 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     include: ["tests/**/*.test.{ts,tsx}"],
+    // Full-game UI tests play dozens of moves; give them room when all files run in parallel.
+    testTimeout: 30_000,
   },
 });
