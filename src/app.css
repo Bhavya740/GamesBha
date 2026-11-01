@@ -1,0 +1,46 @@
+/* Styles for the local test page only (not part of the game). */
+:root {
+  color-scheme: dark;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: radial-gradient(circle at 20% 0%, #3b1d4a 0%, #160d22 55%, #0b0712 100%) fixed;
+  color: #f8f4ff;
+}
+body { margin: 0; min-height: 100vh; }
+.app { max-width: 880px; margin: 0 auto; padding: 16px; }
+.app-header h1 { margin: 0 0 4px; font-size: 22px; }
+.app-header p { margin: 0 0 12px; color: #b3a6cc; font-size: 14px; }
+
+.tpt-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 16px; }
+.tpt-btn {
+  min-height: 36px; padding: 0 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,.15);
+  background: rgba(255,255,255,.08); color: inherit; font: inherit; font-size: 13px; cursor: pointer;
+}
+.tpt-btn:hover { background: rgba(255,255,255,.14); }
+.tpt-check { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #b3a6cc; }
+.tpt-note { font-size: 12px; color: #b3a6cc; }
+
+.tpt-stage { display: flex; flex-wrap: wrap; gap: 24px; justify-content: center; }
+.tpt-col { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+.tpt-label { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; }
+.tpt-chip { font-size: 10px; font-weight: 800; letter-spacing: .06em; padding: 2px 8px; border-radius: 999px; color: #160d22; }
+.tpt-host { background: #f9a8d4; }
+.tpt-guest { background: #7dd3fc; }
+
+/* Simulates Gulaab's dark glass panel behind the game. */
+.tpt-phone {
+  height: 420px; border-radius: 24px; overflow: hidden;
+  background: rgba(40, 24, 60, .55); border: 1px solid rgba(255,255,255,.1);
+  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 20px 50px rgba(0,0,0,.45);
+  display: flex; justify-content: center;
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+}
+.tpt-exited { align-self: center; text-align: center; padding: 24px; color: #b3a6cc; }
+
+.tpt-log { margin-top: 20px; padding: 12px; border-radius: 16px; background: rgba(0,0,0,.3); max-height: 260px; overflow: auto; }
+.tpt-log-title { font-size: 12px; font-weight: 700; color: #b3a6cc; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .06em; }
+.tpt-log-empty { font-size: 12px; color: #b3a6cc; }
+.tpt-log-row { display: flex; align-items: center; gap: 8px; font-size: 12px; padding: 2px 0; }
+.tpt-log-row code { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #e5dcf5; }
+.tpt-ok { color: #34d399; font-variant-numeric: tabular-nums; }
+.tpt-bad { color: #fbbf24; }

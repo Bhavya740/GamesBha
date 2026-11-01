@@ -1,0 +1,329 @@
+/* Dots and Boxes – Gulaab in-call game.
+   All selectors are prefixed with .dnb- so nothing leaks into the host app.
+   Background is transparent: Gulaab draws the dark glass panel behind it. */
+
+.dnb-root {
+  --dnb-text: #f8f4ff;
+  --dnb-muted: #b3a6cc;
+  --dnb-host-c: #f9a8d4;
+  --dnb-guest-c: #7dd3fc;
+  --dnb-success: #34d399;
+  --dnb-warning: #fbbf24;
+  --dnb-grad: linear-gradient(135deg, #ff3d7f 0%, #ff7a59 100%);
+
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 384px;
+  height: 420px;
+  max-height: 100%;
+  padding: 8px;
+  overflow: hidden;
+  background: transparent;
+  color: var(--dnb-text);
+  font: inherit;
+  line-height: 1.2;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.dnb-root.dnb-me-host { --dnb-me: var(--dnb-host-c); --dnb-peer: var(--dnb-guest-c); }
+.dnb-root.dnb-me-guest { --dnb-me: var(--dnb-guest-c); --dnb-peer: var(--dnb-host-c); }
+.dnb-root *,
+.dnb-root *::before,
+.dnb-root *::after { box-sizing: border-box; }
+
+.dnb-root .dnb-host { --dnb-c: var(--dnb-host-c); color: var(--dnb-host-c); }
+.dnb-root .dnb-guest { --dnb-c: var(--dnb-guest-c); color: var(--dnb-guest-c); }
+
+/* ---------- header ---------- */
+.dnb-header {
+  flex: 0 0 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.dnb-back {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--dnb-text);
+  font: inherit;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+.dnb-back:hover { background: rgba(255, 255, 255, 0.13); }
+.dnb-back:active { transform: scale(0.94); }
+.dnb-back:focus-visible,
+.dnb-btn:focus-visible { outline: 2px solid var(--dnb-text); outline-offset: 2px; }
+
+.dnb-status {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: center;
+  font-weight: 700;
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dnb-tone-me { color: var(--dnb-me); }
+.dnb-tone-peer { color: var(--dnb-muted); }
+.dnb-tone-success { color: var(--dnb-success); }
+.dnb-tone-warning { color: var(--dnb-warning); }
+.dnb-tone-muted { color: var(--dnb-muted); }
+
+.dnb-round {
+  flex: 0 0 auto;
+  min-width: 44px;
+  height: 28px;
+  padding: 0 8px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--dnb-muted);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- scores ---------- */
+.dnb-scores {
+  flex: 0 0 52px;
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  min-width: 0;
+}
+.dnb-vs {
+  align-self: center;
+  color: var(--dnb-muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.dnb-score {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 16px;
+  border: 2px solid transparent;
+  background: rgba(255, 255, 255, 0.06);
+  transition: border-color 0.25s, box-shadow 0.25s, background 0.25s;
+}
+.dnb-score.dnb-active {
+  border-color: var(--dnb-c);
+  background: color-mix(in srgb, var(--dnb-c) 14%, transparent);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--dnb-c) 35%, transparent);
+}
+.dnb-score-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.dnb-score-name {
+  color: var(--dnb-text);
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dnb-score-tag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--dnb-muted);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.dnb-active .dnb-score-tag { color: var(--dnb-c); }
+.dnb-turn-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--dnb-c);
+  animation: dnb-pulse 1.2s ease-in-out infinite;
+}
+.dnb-score-num {
+  flex: 0 0 auto;
+  font-size: 24px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--dnb-c);
+  animation: dnb-bump 0.35s ease-out;
+}
+
+/* ---------- board ---------- */
+.dnb-board-wrap {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dnb-board {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.dnb-board-bg {
+  fill: rgba(255, 255, 255, 0.035);
+  stroke: rgba(255, 255, 255, 0.07);
+  stroke-width: 1;
+}
+.dnb-guide {
+  stroke: rgba(255, 255, 255, 0.09);
+  stroke-width: 2;
+  stroke-dasharray: 2 5;
+  stroke-linecap: round;
+}
+.dnb-dot { fill: var(--dnb-text); }
+
+.dnb-box rect {
+  fill: var(--dnb-c);
+  fill-opacity: 0.32;
+  stroke: var(--dnb-c);
+  stroke-opacity: 0.5;
+  stroke-width: 1;
+}
+.dnb-box text {
+  fill: var(--dnb-c);
+  font-size: 15px;
+  font-weight: 800;
+}
+.dnb-box {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: dnb-pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.dnb-line-stroke {
+  stroke: var(--dnb-c);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: dnb-draw 0.22s ease-out;
+}
+.dnb-line-glow {
+  stroke: var(--dnb-c);
+  stroke-width: 12;
+  stroke-linecap: round;
+  stroke-opacity: 0.28;
+  animation: dnb-fade-in 0.3s ease-out;
+}
+
+.dnb-hit polygon {
+  fill: transparent;
+  stroke: none;
+}
+.dnb-hit { outline: none; }
+.dnb-preview {
+  stroke: var(--dnb-me);
+  stroke-width: 5;
+  stroke-linecap: round;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s;
+}
+.dnb-myturn .dnb-hit { cursor: pointer; }
+.dnb-myturn .dnb-hit:focus-visible .dnb-preview { opacity: 0.6; }
+.dnb-myturn .dnb-hit:active .dnb-preview { opacity: 0.6; }
+@media (hover: hover) {
+  .dnb-myturn .dnb-hit:hover .dnb-preview { opacity: 0.45; }
+}
+
+/* ---------- end-of-game overlay ---------- */
+.dnb-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 18px;
+  background: rgba(14, 8, 24, 0.55);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  animation: dnb-fade-in 0.3s ease-out;
+}
+.dnb-card {
+  width: min(260px, calc(100% - 24px));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 16px;
+  border-radius: 20px;
+  background: rgba(32, 20, 48, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  text-align: center;
+  animation: dnb-rise 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.dnb-card-title { font-size: 20px; font-weight: 800; }
+.dnb-card-score {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 30px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.dnb-dash { color: var(--dnb-muted); font-size: 22px; }
+.dnb-card-sub { color: var(--dnb-muted); font-size: 13px; min-height: 16px; }
+
+.dnb-btn {
+  min-width: 160px;
+  min-height: 48px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--dnb-grad);
+  color: #fff;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(255, 61, 127, 0.35);
+  transition: transform 0.15s, filter 0.15s, opacity 0.15s;
+}
+.dnb-btn:hover { filter: brightness(1.08); }
+.dnb-btn:active { transform: scale(0.96); }
+.dnb-btn:disabled { opacity: 0.55; cursor: default; transform: none; filter: none; }
+
+/* ---------- animations ---------- */
+@keyframes dnb-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes dnb-pop { from { transform: scale(0.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes dnb-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes dnb-rise { from { transform: translateY(12px) scale(0.95); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes dnb-bump { 0% { transform: scale(1); } 40% { transform: scale(1.3); } 100% { transform: scale(1); } }
+@keyframes dnb-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .dnb-root *,
+  .dnb-root *::before,
+  .dnb-root *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
