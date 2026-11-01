@@ -44,3 +44,7 @@ body { margin: 0; min-height: 100vh; }
 .tpt-log-row code { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #e5dcf5; }
 .tpt-ok { color: #34d399; font-variant-numeric: tabular-nums; }
 .tpt-bad { color: #fbbf24; }
+
+.app-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.app-tab { min-height: 36px; padding: 0 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,.15); background: rgba(255,255,255,.05); color: #b3a6cc; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; }
+.app-tab-on { background: linear-gradient(135deg, #ff3d7f, #ff7a59); border-color: transparent; color: #fff; }
